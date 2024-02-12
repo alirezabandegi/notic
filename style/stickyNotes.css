@@ -214,6 +214,25 @@
     color: #f1f1f171;
     margin-left: 20px;
 }
+.saveAndDeleteButtons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.noteSaveButton{
+    color: #00aa33;
+    border: solid 1px #00aa33;
+    border-radius: 15%;
+    cursor: pointer;
+    background-color: transparent;
+    padding: 5px 10px;
+    margin-right: 15px;
+    transition: color 0.2s, border 0.2s;
+}
+.noteSaveButton:hover{
+    color: #00aa3397;
+    border: solid 1px #00aa3397;
+}
 .noteDeleteButton{
     border: none;
     cursor: pointer;
