@@ -5,6 +5,11 @@ import favoriteApp from "./favorite.js";
 import helpApp from "./help.js";
 import settingsApp from "./settings.js";
 
+const main = document.querySelector(".main");
+
+let activeApp = null;
+const styleHref = document.querySelector("#style");
+
 const buttons = [
   document.querySelector(".appHomepageButton"),
   document.querySelector(".stickyNoteAppButton"),
@@ -14,9 +19,18 @@ const buttons = [
   document.querySelector(".settingsButton")
 ];
 
-const main = document.querySelector(".main");
+const styleUrl = [
+  "style/appHome.css",
+  "style/stickyNotes.css",
+  "style/calendarApp.css",
+  "style/favorite.css",
+  "style/help.css",
+  "style/settings.css"
+];
 
-let activeApp = null;
+function styles(index){
+  styleHref.href = styleUrl[index];
+}
 
 function setToDefault(clickedButton) {
   main.innerHTML = "";
@@ -29,6 +43,7 @@ function runApp(index, appInstance) {
   if (activeApp !== index) {
     activeApp = index;
     setToDefault(buttons[index]);
+    styles(index);
     new appInstance();
   }
 }
@@ -59,4 +74,5 @@ buttons.forEach((button, index) => {
 });
 
 buttons[0].style.backgroundColor = "#0d4462";
+styles(0);
 new appHomepage();
