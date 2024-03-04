@@ -13,23 +13,22 @@ export default class stickyNoteApp{
         
         this.getLocalStorage(null);
         
-        this.addNotesStickyBarButton.addEventListener("click", () => {
-            this.setLocalStorage(localStorage.length,"Write Tittle","Work","Alireza Maxer",`${this.currentDate.toLocaleString().split(",")[0]}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
-            let localstorageGetDetails = this.getLocalStorage(localStorage.length - 1);
-            this.stickyBars.innerHTML += this.createStickyBar(localStorage.length - 1, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.stickyBarArticle);
-            this.noteEditor.innerHTML = stickyNoteApp.editor(localStorage.length - 1, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, localstorageGetDetails.time, localstorageGetDetails.article);
-            this.displayStickyContent();
-            
-        });
+        this.addNotesStickyBarButton.addEventListener("click", () => this.addStickyBar());
 
-        this.addCategoriesButton.addEventListener("click", () => {
-            let categoryName = prompt("Entry category name:").trim();
+        this.addCategoriesButton.addEventListener("click", () => this.addCategorie());
+    }
+    addCategorie(){
+        let categoryName = prompt("Entry category name:").trim();
             if(categoryName){
                 this.categories.innerHTML += stickyNoteApp.createCategorie(categoryName);
-            }
-        });
-
-        
+        }
+    }
+    addStickyBar(){
+        this.setLocalStorage(localStorage.length,"Write Tittle","Work","Alireza Maxer",`${this.currentDate.toLocaleString().split(",")[0]}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
+        let localstorageGetDetails = this.getLocalStorage(localStorage.length - 1);
+        this.stickyBars.innerHTML += this.createStickyBar(localStorage.length - 1, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.stickyBarArticle);
+        this.noteEditor.innerHTML = stickyNoteApp.editor(localStorage.length - 1, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, localstorageGetDetails.time, localstorageGetDetails.article);
+        this.displayStickyContent();
     }
     displayStickyContent(){
         const stickyBar = document.querySelectorAll(".StickyBar");
