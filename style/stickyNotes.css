@@ -88,12 +88,14 @@
     border: solid 2px #0d4462;
 }
 .StickyBar h3{
+    overflow-wrap: anywhere;
     font-weight: 500;
     font-size: 1rem;
     color: white;
     margin-bottom: 10px;
 }
 .StickyBar p{
+    overflow-wrap: anywhere;
     border-top:solid 2px #cfcfcf;
     padding-top: 15px;
     font-weight: 500;
@@ -206,6 +208,9 @@
     top: -3px;
     left: -25px;
 }
+.noteTitle{
+    overflow-wrap: anywhere;
+}
 .writerName{
     font-size: 0.8rem;
     font-weight: 500;
@@ -248,30 +253,30 @@
     background-color: #363435;
     padding: 35px 7% 15px 7%;
 }
-.overflowFix{
+.note{
     width: 100%;
     height: 84.8vh;
     overflow: hidden;
     scrollbar-gutter: stable;
     overflow-wrap: anywhere;
 }
-.overflowFix:hover{
+.note:hover{
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-color: #f1f1f171 transparent;
     overflow-wrap: anywhere;
 }
-.overflowFix hr{
+.note hr{
     margin: 10px 0;
     border-color: #f1f1f171;
 }
-.overflowFix p{
+.note p{
     line-height: 1.4;
     font-size: 0.9rem;
     display: inline-block;
     margin: 10px 0;
 }
-.overflowFix ul{
+.note ul{
     line-height: 1.7;
     font-size: 0.9rem;
     margin: 10px 0;
