@@ -1,6 +1,5 @@
 export default class stickyNoteApp{
     constructor(main){
-        this.currentDate = new Date();
         this.main = main;
         this.main.innerHTML = stickyNoteApp.htmlContent();
         
@@ -19,9 +18,32 @@ export default class stickyNoteApp{
 
         this.addCategoriesButton.addEventListener("click", () => this.addCategorie());
     }
-    setTime(){
-        let currentDate = new Date();
-        
+    handleTime(time){
+        const currentTime = new Date();
+
+        if(time === null){
+            const fullYear = currentTime.getFullYear().toString().padStart(2, '0')
+            const month = (currentTime.getMonth() + 1).toString().padStart(2, '0')
+            const date = currentTime.getDate().toString().padStart(2, '0')
+            const hours = currentTime.getHours().toString().padStart(2, '0');
+            const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+            const seconds = currentTime.getSeconds().toString().padStart(2, '0');
+            
+            return `${fullYear}-${month}-${date}T${hours}:${minutes}:${seconds}`;
+        }
+        else{
+            const storedTime = new Date(time);
+            
+            const timeDifference = currentTime - storedTime;
+            const millisecondsInOneDay = 24 * 60 * 60 * 1000;
+            
+            if (timeDifference < millisecondsInOneDay) {
+              return time.slice(11,16);
+            } else {
+              const daysPassed = Math.floor(timeDifference / millisecondsInOneDay);
+              return `${daysPassed} day ago`;
+            }
+        }
     }
     addCategorie(){
         let categoryName = prompt("Entry category name:").trim();
@@ -30,18 +52,19 @@ export default class stickyNoteApp{
         }
     }
     addStickyBar(){
-        this.setLocalStorage(localStorage.length,"Write Tittle","Work","Alireza Maxer",`${this.currentDate.toLocaleString().split(",")[0]}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
+        this.setLocalStorage(localStorage.length,"Write Tittle","Work","Alireza Maxer",`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
         let localstorageGetDetails = this.getLocalStorage(localStorage.length - 1);
-        this.stickyBars.innerHTML += this.createStickyBar(localStorage.length - 1, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.stickyBarArticle);
-        this.noteEditor.innerHTML = stickyNoteApp.editor(localStorage.length - 1, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, localstorageGetDetails.time, localstorageGetDetails.article);
+        this.stickyBars.innerHTML += this.createStickyBar(localStorage.length - 1, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle);
+        this.noteEditor.innerHTML = stickyNoteApp.editor(localStorage.length - 1, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
         this.displayStickyContent();
     }
     displayStickyContent(){
         const stickyBar = document.querySelectorAll(".StickyBar");
         for(let i = 0; i < stickyBar.length; i++){
-            stickyBar[i].addEventListener("click", () => {
+            //FIX BUG
+            stickyBar[i].addEventListener("click", () => { 
                 let localstorageGetDetails = this.getLocalStorage(i);
-                this.noteEditor.innerHTML = stickyNoteApp.editor(stickyBar[i].id, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, localstorageGetDetails.time, localstorageGetDetails.article);
+                this.noteEditor.innerHTML = stickyNoteApp.editor(stickyBar[i].id, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
                 this.idOfStickyBar = i;
                 this.saveSticky();
                 this.limitCharacters();
@@ -67,6 +90,8 @@ export default class stickyNoteApp{
         let noteCategory = document.querySelector(".noteCategory");
         let writerName = document.querySelector(".writerName");
         let note = document.querySelector(".note");
+        let timeOfNoteEditor = document.querySelector(".timeOfNoteEditor");
+
 
         let stickyBar = document.querySelectorAll(".StickyBar")[this.idOfStickyBar];
 
@@ -80,11 +105,12 @@ export default class stickyNoteApp{
             ? note.textContent.substring(0, 80) + "..."
             : note.textContent;
 
-            this.setLocalStorage(noteEditorHeader.id, noteTitle.textContent, noteCategory.textContent, writerName.textContent,`${this.currentDate.toLocaleString().split(",")[0]}`, note.innerHTML, stickyBarArticleHanddle);
+            this.setLocalStorage(noteEditorHeader.id, noteTitle.textContent, noteCategory.textContent, writerName.textContent,`${this.handleTime(null)}`, note.innerHTML, stickyBarArticleHanddle);
             stickyBarTittle.textContent = noteTitle.textContent.length >= 30 ? noteTitle.textContent.substring(0, 30) + "..." : noteTitle.textContent;
             stickyBarArticle.textContent = stickyBarArticleHanddle;
             stickyBarCategory.textContent = noteCategory.textContent;
-            timeOfNote.textContent = timeOfNote.textContent;
+            timeOfNote.textContent = `${this.handleTime(null).slice(11,16)}`;
+            timeOfNoteEditor.textContent = `${this.handleTime(null).slice(11,16)}`;
         });
     }
     setLocalStorage(id, tittle, category, nameOfWriter, time, article, stickyBarArticle){
@@ -97,7 +123,7 @@ export default class stickyNoteApp{
                 let localStorageDetails = JSON.parse(localStorage.getItem(`Stickynote${i}`));
                 if(localStorageDetails !== null){
                     let localstorageGetDetails = this.getLocalStorage(i);
-                    this.stickyBars.innerHTML += this.createStickyBar(i, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.stickyBarArticle);
+                    this.stickyBars.innerHTML += this.createStickyBar(i, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle);
                     this.displayStickyContent();
                 }
             }
@@ -118,7 +144,7 @@ export default class stickyNoteApp{
 
                     <div class="writerAndTimeOfNote">
                         <span class="writerName">${nameOfWriter}</span>
-                        <span class="timeOfNote">${time}</span>
+                        <span class="timeOfNoteEditor">${time}</span>
                     </div>
                 </div>
 
@@ -138,7 +164,7 @@ export default class stickyNoteApp{
         </div>
         `;
     }
-    createStickyBar(id, tittle, category, article){
+    createStickyBar(id, tittle, category, time, article){
     return `
         <div id="${id}" class="StickyBar">
             <h3 class="stickyBarTittle">${tittle.length >= 30 ? tittle.substring(0, 30) + "..." : tittle}</h3>
@@ -151,7 +177,7 @@ export default class stickyNoteApp{
                 </button>
 
                 <span class="timeOfNote">
-                ${this.currentDate.toLocaleString().split(",")[0]}
+                ${time}
                 </span>
             </div>
         </div>
