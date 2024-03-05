@@ -1,5 +1,5 @@
 export default class helpApp{
-    constructor(){
+    constructor(main){
         //none
     }
 }

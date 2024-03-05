@@ -1,7 +1,7 @@
 export default class stickyNoteApp{
-    constructor(){
+    constructor(main){
         this.currentDate = new Date();
-        this.main = document.querySelector(".main");
+        this.main = main;
         this.main.innerHTML = stickyNoteApp.htmlContent();
         
         this.addNotesStickyBarButton = document.querySelector(".addNotesStickyBarButton");

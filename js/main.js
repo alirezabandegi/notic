@@ -44,7 +44,7 @@ function runApp(index, appInstance) {
     activeApp = index;
     setToDefault(buttons[index]);
     styles(index);
-    new appInstance();
+    new appInstance(main);
   }
 }
 
@@ -75,4 +75,4 @@ buttons.forEach((button, index) => {
 
 buttons[0].style.backgroundColor = "#0d4462";
 styles(0);
-new appHomepage();
+new appHomepage(main);

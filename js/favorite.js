@@ -1,5 +1,5 @@
 export default class favoriteApp{
-    constructor(){
+    constructor(main){
         //none
     }
 }

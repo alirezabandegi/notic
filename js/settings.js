@@ -1,5 +1,5 @@
 export default class settingsApp{
-    constructor(){
+    constructor(main){
         //none
     }
 }
