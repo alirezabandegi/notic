@@ -22,14 +22,9 @@ export default class stickyNoteApp{
         const currentTime = new Date();
 
         if(time === null){
-            const fullYear = currentTime.getFullYear().toString().padStart(2, '0')
-            const month = (currentTime.getMonth() + 1).toString().padStart(2, '0')
-            const date = currentTime.getDate().toString().padStart(2, '0')
-            const hours = currentTime.getHours().toString().padStart(2, '0');
-            const minutes = currentTime.getMinutes().toString().padStart(2, '0');
-            const seconds = currentTime.getSeconds().toString().padStart(2, '0');
-            
-            return `${fullYear}-${month}-${date}T${hours}:${minutes}:${seconds}`;
+            const formattedTime = (part) => currentTime[part]().toString().padStart(2,'0');
+            let fixMonthNumber = (Number(formattedTime('getMonth')) + 1).toString().padStart(2,'0');
+            return `${formattedTime('getFullYear')}-${fixMonthNumber}-${formattedTime('getDate')}T${formattedTime('getHours')}:${formattedTime('getMinutes')}:${formattedTime('getSeconds')}`;
         }
         else{
             const storedTime = new Date(time);
