@@ -15,7 +15,6 @@ export default class stickyNoteApp{
         this.idOfStickyBar = null;
         
         this.addNotesStickyBarButton.addEventListener("click", () => this.addStickyBar());
-
         this.addCategoriesButton.addEventListener("click", () => this.addCategorie());
     }
     handleTime(time){
@@ -28,7 +27,6 @@ export default class stickyNoteApp{
         }
         else{
             const storedTime = new Date(time);
-            
             const timeDifference = currentTime - storedTime;
             const millisecondsInOneDay = 24 * 60 * 60 * 1000;
             
@@ -47,60 +45,62 @@ export default class stickyNoteApp{
         }
     }
     addStickyBar(){
-        this.setLocalStorage(localStorage.length,"Write Tittle","Work","Alireza Maxer",`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
-        let localstorageGetDetails = this.getLocalStorage(localStorage.length - 1);
-        this.stickyBars.innerHTML += this.createStickyBar(localStorage.length - 1, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle);
-        this.noteEditor.innerHTML = stickyNoteApp.editor(localStorage.length - 1, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
+        const id = localStorage.length;
+        this.setLocalStorage(id,"Write Tittle","Work","Alireza Maxer",`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
+        let localstorageGetDetails = this.getLocalStorage(id);
+        this.stickyBars.innerHTML += this.createStickyBar(id, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle);
+        this.noteEditor.innerHTML = stickyNoteApp.editor(id, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
         this.displayStickyContent();
     }
-    displayStickyContent(){
-        const stickyBar = document.querySelectorAll(".StickyBar");
-        for(let i = 0; i < stickyBar.length; i++){
-            //FIX BUG
-            stickyBar[i].addEventListener("click", () => { 
-                let localstorageGetDetails = this.getLocalStorage(i);
-                this.noteEditor.innerHTML = stickyNoteApp.editor(stickyBar[i].id, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
+    displayStickyContent() {
+        const stickyBars = document.querySelectorAll(".StickyBar");
+        stickyBars.forEach((stickyBar, i) => {
+            stickyBar.addEventListener("click", () => {
+                const localstorageGetDetails = this.getLocalStorage(i);
+                this.noteEditor.innerHTML = stickyNoteApp.editor(i, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
                 this.idOfStickyBar = i;
                 this.saveSticky();
                 this.limitCharacters();
             });
-        }
+        });
     }
     limitCharacters() {
-        let content = document.querySelector(".noteTitle");
+        const content = document.querySelector(".noteTitle");
+
         content.addEventListener('input', () => {
             const maxLength = 30;
             
             if (content.innerText.length > maxLength) {
-                let truncatedContent = content.innerText.substring(0, maxLength);
-                content.innerText = truncatedContent;
+                content.innerText = content.innerText.substring(0, maxLength);
                 alert('Maximum limit reached!');
             }
         });
     }
     saveSticky(){
-        let noteSaveButton = document.querySelector(".noteSaveButton");
-        let noteEditorHeader = document.querySelector(".noteEditorHeader");
-        let noteTitle = document.querySelector(".noteTitle");
-        let noteCategory = document.querySelector(".noteCategory");
-        let writerName = document.querySelector(".writerName");
-        let note = document.querySelector(".note");
-        let timeOfNoteEditor = document.querySelector(".timeOfNoteEditor");
-
-
-        let stickyBar = document.querySelectorAll(".StickyBar")[this.idOfStickyBar];
-
-        let stickyBarTittle = stickyBar.querySelector(".stickyBarTittle");
-        let stickyBarArticle = stickyBar.querySelector(".stickyBarArticle");
-        let stickyBarCategory = stickyBar.querySelector(".stickyBarCategory");
-        let timeOfNote = stickyBar.querySelector(".timeOfNote");
+        const noteSaveButton = document.querySelector(".noteSaveButton");
 
         noteSaveButton.addEventListener("click", () => {
-            let stickyBarArticleHanddle = note.textContent.length >= 80
+            const noteEditorHeader = document.querySelector(".noteEditorHeader");
+            const noteTitle = document.querySelector(".noteTitle");
+            const noteCategory = document.querySelector(".noteCategory");
+            const writerName = document.querySelector(".writerName");
+            const note = document.querySelector(".note");
+            const timeOfNoteEditor = document.querySelector(".timeOfNoteEditor");
+    
+    
+            const stickyBar = document.querySelectorAll(".StickyBar")[this.idOfStickyBar];
+    
+            const stickyBarTittle = stickyBar.querySelector(".stickyBarTittle");
+            const stickyBarArticle = stickyBar.querySelector(".stickyBarArticle");
+            const stickyBarCategory = stickyBar.querySelector(".stickyBarCategory");
+            const timeOfNote = stickyBar.querySelector(".timeOfNote");
+
+            const stickyBarArticleHanddle = note.textContent.length >= 80
             ? note.textContent.substring(0, 80) + "..."
             : note.textContent;
 
             this.setLocalStorage(noteEditorHeader.id, noteTitle.textContent, noteCategory.textContent, writerName.textContent,`${this.handleTime(null)}`, note.innerHTML, stickyBarArticleHanddle);
+
             stickyBarTittle.textContent = noteTitle.textContent.length >= 30 ? noteTitle.textContent.substring(0, 30) + "..." : noteTitle.textContent;
             stickyBarArticle.textContent = stickyBarArticleHanddle;
             stickyBarCategory.textContent = noteCategory.textContent;
@@ -109,15 +109,15 @@ export default class stickyNoteApp{
         });
     }
     setLocalStorage(id, tittle, category, nameOfWriter, time, article, stickyBarArticle){
-        let addToLocalStorage = {tittle: `${tittle.trim()}`,category: `${category.trim()}`,nameOfWriter: `${nameOfWriter}`,time: `${time}`,article: `${article.trim()}`, stickyBarArticle: `${stickyBarArticle.trim()}`};
+        const addToLocalStorage = {tittle: tittle.trim(), category: category.trim(), nameOfWriter: nameOfWriter, time: time, article: article.trim(), stickyBarArticle: stickyBarArticle.trim()};
         localStorage.setItem(`Stickynote${id}`, JSON.stringify(addToLocalStorage));
     }
     getLocalStorage(id){
         if(id === null){
             for(let i = 0; i < localStorage.length; i++){
-                let localStorageDetails = JSON.parse(localStorage.getItem(`Stickynote${i}`));
+                const localStorageDetails = JSON.parse(localStorage.getItem(`Stickynote${i}`));
                 if(localStorageDetails !== null){
-                    let localstorageGetDetails = this.getLocalStorage(i);
+                    const localstorageGetDetails = this.getLocalStorage(i);
                     this.stickyBars.innerHTML += this.createStickyBar(i, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle);
                     this.displayStickyContent();
                 }
