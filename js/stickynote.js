@@ -48,7 +48,7 @@ export default class stickyNoteApp{
         const id = localStorage.length;
         this.setLocalStorage(id,"Write Tittle","Work","Alireza Maxer",`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
         let localstorageGetDetails = this.getLocalStorage(id);
-        this.stickyBars.innerHTML += this.createStickyBar(id, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle);
+        this.stickyBars.innerHTML.prepend(this.createStickyBar(id, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle));
         this.noteEditor.innerHTML = stickyNoteApp.editor(id, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
         this.displayStickyContent();
     }
@@ -86,8 +86,7 @@ export default class stickyNoteApp{
             const writerName = document.querySelector(".writerName");
             const note = document.querySelector(".note");
             const timeOfNoteEditor = document.querySelector(".timeOfNoteEditor");
-    
-    
+        
             const stickyBar = document.querySelectorAll(".StickyBar")[this.idOfStickyBar];
     
             const stickyBarTittle = stickyBar.querySelector(".stickyBarTittle");
