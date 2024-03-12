@@ -249,6 +249,8 @@ export default class settingsApp{
                 </div>
             </div>
         </div>
+
+        <p><strong>Caution:</strong> Uploaded photos are resized to a 1:1 ratio. Optimal size for a smooth experience is 150x150 pixels.</p>
         `;
     }
 
