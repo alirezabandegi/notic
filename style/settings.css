@@ -112,9 +112,16 @@
     align-items: center;
     font-weight: bold;
 }
-.photoInput svg{
+.photoInput:hover{
+    border: 1px solid #b3b3b3b2;
+    color: #b3b3b3b2;
+}
+.container svg{
     width: 20px;
     height: 20px;
+}
+.container svg:hover{
+    color: #b3b3b3b2;
 }
 .container div div:last-child{
     border: 1px solid #b3b3b3;
@@ -123,9 +130,9 @@
     cursor: pointer;
     font-weight: bold;
 }
-.container div div:last-child svg{
-    width: 20px;
-    height: 20px;
+.container div div:last-child:hover{
+    border: 1px solid #b3b3b3b2;
+    color: #b3b3b3b2;
 }
 .contentProfilePicture h1{
     margin-bottom: 10px;
