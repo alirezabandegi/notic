@@ -79,16 +79,16 @@ const runApp = () => {
   new appHomepage(main);
 }
 
-const singUpHtmlContent = () => {
+const signUpHtmlContent = () => {
   return `
-  <h1>Sing Up</h1>
-  <form id="singUpForm">
+  <h1>Sign Up</h1>
+  <form id="signUpForm">
     <input type="text" id="name" name="name" placeholder="Name" required>
     <input type="email" id="email" name="email" placeholder="Email" required>
     <input type="tel" id="phone" name="phone" placeholder="Phone Number(Not required)">
     <input type="password" id="password" name="password" placeholder="Password" required>
     
-    <button type="submit">Sing Up</button>
+    <button type="submit">Sign Up</button>
   </form>
   `;
 }
@@ -96,10 +96,10 @@ const singUpHtmlContent = () => {
 const checkUserRegesteration = () => {
   const userInformation = JSON.parse(localStorage.getItem("personalInformation"));
   if (userInformation === null) {
-    styleHref.href = "style/singUp.css";
-    main.innerHTML = singUpHtmlContent();
+    styleHref.href = "style/signUp.css";
+    main.innerHTML = signUpHtmlContent();
 
-    document.querySelector("#singUpForm").addEventListener("submit", (event) => {
+    document.querySelector("#signUpForm").addEventListener("submit", (event) => {
       event.preventDefault();
       const password = document.querySelector("#password");
       const formInputNames = ["name", "email", "phone"];
@@ -128,7 +128,12 @@ const checkUserRegesteration = () => {
 }
 
 window.onload = function () {
-  
+  const profilePictureStorage = localStorage.getItem("profilePicture");
+  const profilePic = document.querySelector(".profilePic");
+
+  profilePictureStorage === null
+  ? profilePic.src = "files/profile.webp"
+  : profilePic.src = profilePictureStorage;
+
   checkUserRegesteration();
-  
 };

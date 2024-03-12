@@ -45,10 +45,10 @@ export default class stickyNoteApp{
         }
     }
     addStickyBar(){
-        const id = localStorage.length;
+        const id = localStorage.length - 1;
         this.setLocalStorage(id,"Write Tittle","Work","Alireza Maxer",`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
         let localstorageGetDetails = this.getLocalStorage(id);
-        this.stickyBars.innerHTML.prepend(this.createStickyBar(id, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle));
+        this.stickyBars.innerHTML += this.createStickyBar(id, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle);
         this.noteEditor.innerHTML = stickyNoteApp.editor(id, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
         this.displayStickyContent();
     }
@@ -56,7 +56,7 @@ export default class stickyNoteApp{
         const stickyBars = document.querySelectorAll(".StickyBar");
         stickyBars.forEach((stickyBar, i) => {
             stickyBar.addEventListener("click", () => {
-                const localstorageGetDetails = this.getLocalStorage(i);
+                let localstorageGetDetails = this.getLocalStorage(i);
                 this.noteEditor.innerHTML = stickyNoteApp.editor(i, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
                 this.idOfStickyBar = i;
                 this.saveSticky();
@@ -76,6 +76,15 @@ export default class stickyNoteApp{
             }
         });
     }
+    /*autoSave() {
+        const note = document.querySelector(".note");
+
+        note.addEventListener('input', () => {
+            if (note) {
+                console.log(note);
+            }
+        });
+    }*/
     saveSticky(){
         const noteSaveButton = document.querySelector(".noteSaveButton");
 
@@ -113,7 +122,7 @@ export default class stickyNoteApp{
     }
     getLocalStorage(id){
         if(id === null){
-            for(let i = 0; i < localStorage.length; i++){
+            for(let i = 0; i < (localStorage.length - 1); i++){
                 const localStorageDetails = JSON.parse(localStorage.getItem(`Stickynote${i}`));
                 if(localStorageDetails !== null){
                     const localstorageGetDetails = this.getLocalStorage(i);

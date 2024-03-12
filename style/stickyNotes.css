@@ -261,7 +261,7 @@
     overflow-wrap: anywhere;
 }
 .note:hover{
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     scrollbar-color: #f1f1f171 transparent;
     overflow-wrap: anywhere;

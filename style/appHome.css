@@ -8,7 +8,7 @@
     scrollbar-gutter: stable;
 }
 .main:hover{
-    overflow-y: scroll;
+    overflow-y: auto;
     scrollbar-color: #f1f1f171 transparent;
 }
 section{

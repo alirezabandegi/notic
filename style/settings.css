@@ -19,6 +19,7 @@
     font-weight: 700;
     width: 100%;
     height: 2rem;
+    cursor: pointer;
     transition: background-color 0.2s;
 }
 .sections div:hover{
@@ -29,26 +30,44 @@
     border-left: solid 1px #f1f1f171;
     height: 100vh;
     background-color: #363435;
-    color: white;
+    color: #b3b3b3;
     padding: 3% 5%;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    overflow: hidden;
+    scrollbar-gutter: stable;
+}
+.content:hover{
+    overflow-y: auto;
+    scrollbar-color: #f1f1f171 transparent;
+}
+.content h1, .content h3, .content strong{
+    color: #dcdcdc;
+}
+
+/* Settings */
+.contentSettings ol{
+    margin-top: 1rem;
+}
+.contentSettings li{
+    margin-left: 3%;
+    line-height: 1.5;
 }
 
 /* Personal Settings */
-.content label{
+.contentPersonalSettings label{
     display: block;
     margin: 1rem 0 5px 0;
 }
-.content span{
+.contentPersonalSettings span{
     color: red;
 }
-.content input{
+.contentPersonalSettings input{
     display: block;
     background-color: #f1f1f1;
     border: none;
     font-size: 1rem;
 }
-.content button{
+.contentPersonalSettings button{
     color: #00aa33;
     border: solid 1px #00aa33;
     cursor: pointer;
@@ -59,8 +78,130 @@
     transition: color 0.2s, border 0.2s, background-color 0.2s;
     
 }
-.content button:hover{
+.contentPersonalSettings button:hover{
     color: white;
     border: solid 1px #00aa33;
     background-color: #00aa33;
+}
+
+/* Profile Picture Settings */
+.contentProfilePicture img{
+    width: 200px;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.container div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.photoInput{
+    border: 1px solid #b3b3b3;
+    border-radius: 2%;
+    padding: 5px 10px;
+    margin-right: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+.photoInput svg{
+    width: 20px;
+    height: 20px;
+}
+.container div div:last-child{
+    border: 1px solid #b3b3b3;
+    border-radius: 2%;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.container div div:last-child svg{
+    width: 20px;
+    height: 20px;
+}
+.contentProfilePicture h1{
+    margin-bottom: 10px;
+}
+.contentProfilePicture p{
+    margin-bottom: 20px;  
+}
+.contentProfilePicture label {
+    cursor: pointer;
+    
+}
+.contentProfilePicture input {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+/* storage Settings */
+.contentSecurity label{
+    display: block;
+    margin: 1rem 0 5px 0;
+}
+.contentSecurity input{
+    display: block;
+    background-color: #f1f1f1;
+    border: none;
+    font-size: 1rem;
+}
+.contentSecurity button{
+    color: #00aa33;
+    border: solid 1px #00aa33;
+    cursor: pointer;
+    background-color: transparent;
+    padding: 5px 10px;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    transition: color 0.2s, border 0.2s, background-color 0.2s;
+}
+.contentSecurity button:hover{
+    color: white;
+    border: solid 1px #00aa33;
+    background-color: #00aa33;
+}
+
+/* storage Settings */
+.storageGraphicBackground{
+    position: relative;
+    border: 5px solid;
+    border-image: linear-gradient(45deg, #0af8f9, #45e1ab) 1;
+    padding: 1vh;
+    width: 100%;
+    height: 6vh;
+    margin-bottom: 8vh;
+}
+.storageGraphicText{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.storageGraphic{
+    background: linear-gradient(45deg, #0af8f9, #45e1ab);
+    width: 0;
+    height: 100%;
+}
+.contentStorage h1, .contentStorage h3{
+    margin-bottom: 10px;
+}
+.contentStorage p{
+    margin-bottom: 20px;  
+}
+.contentStorage ul{
+    margin-left: 4%;
+    line-height: 2;
+    margin-bottom: 20px;
 }
