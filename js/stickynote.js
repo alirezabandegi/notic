@@ -44,11 +44,16 @@ export default class stickyNoteApp{
                 this.categories.innerHTML += stickyNoteApp.createCategorie(categoryName);
         }
     }
+    setToFirst(id, data) {
+        const stickyBar = this.createStickyBar(id, data.tittle, data.category, this.handleTime(data.time), data.stickyBarArticle);
+        this.stickyBars.insertAdjacentHTML('afterbegin', stickyBar);
+    }
     addStickyBar(){
         this.setLocalStorage(null,"Write Tittle","Work","Alireza Maxer",`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
-        const id = Object.keys(this.getLocalStorage(1)).length - 1;
+        const id = 0;
         const localstorageGetDetails = this.getLocalStorage(1)[id];
-        this.stickyBars.innerHTML += this.createStickyBar(id, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle);
+
+        this.setToFirst(id, localstorageGetDetails);
         this.noteEditor.innerHTML = stickyNoteApp.editor(id, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
         this.displayStickyContent();
     }
@@ -64,6 +69,18 @@ export default class stickyNoteApp{
                 this.deleteSticky(i);
             });
         });
+    }
+    updateObjNewestToOld(data){
+        const dataArray = Object.values(data);
+
+        dataArray.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+        const updatedData = {};
+        dataArray.forEach((item, index) => {
+            updatedData[index] = item;
+        });
+
+        return updatedData;
     }
     resetKeys(obj) {
         const newObj = {};
@@ -88,7 +105,7 @@ export default class stickyNoteApp{
             const updatedStickyNotes = this.resetKeys(this.removeKey(this.getLocalStorage(1), id));
             localStorage.setItem('stickynotes', JSON.stringify(updatedStickyNotes));
             
-            this.getLocalStorage(null)
+            this.getLocalStorage(null);
             this.noteEditor.innerHTML = "";
         });
     }
@@ -117,31 +134,21 @@ export default class stickyNoteApp{
         const noteSaveButton = document.querySelector(".noteSaveButton");
 
         noteSaveButton.addEventListener("click", () => {
-            const noteEditorHeader = document.querySelector(".noteEditorHeader");
+            const noteEditorHeader = document.querySelector(".noteEditorHeader").getAttribute('data-id');
             const noteTitle = document.querySelector(".noteTitle");
             const noteCategory = document.querySelector(".noteCategory");
             const writerName = document.querySelector(".writerName");
             const note = document.querySelector(".note");
-            const timeOfNoteEditor = document.querySelector(".timeOfNoteEditor");
-        
-            const stickyBar = document.querySelectorAll(".StickyBar")[this.idOfStickyBar];
     
-            const stickyBarTittle = stickyBar.querySelector(".stickyBarTittle");
-            const stickyBarArticle = stickyBar.querySelector(".stickyBarArticle");
-            const stickyBarCategory = stickyBar.querySelector(".stickyBarCategory");
-            const timeOfNote = stickyBar.querySelector(".timeOfNote");
-
             const stickyBarArticleHanddle = note.textContent.length >= 80
             ? note.textContent.substring(0, 80) + "..."
             : note.textContent;
 
-            this.setLocalStorage(noteEditorHeader.id, noteTitle.textContent, noteCategory.textContent, writerName.textContent,`${this.handleTime(null)}`, note.innerHTML, stickyBarArticleHanddle);
+            this.setLocalStorage(noteEditorHeader, noteTitle.textContent, noteCategory.textContent, writerName.textContent,`${this.handleTime(null)}`, note.innerHTML, stickyBarArticleHanddle);
 
-            stickyBarTittle.textContent = noteTitle.textContent.length >= 30 ? noteTitle.textContent.substring(0, 30) + "..." : noteTitle.textContent;
-            stickyBarArticle.textContent = stickyBarArticleHanddle;
-            stickyBarCategory.textContent = noteCategory.textContent;
-            timeOfNote.textContent = `${this.handleTime(null).slice(11,16)}`;
-            timeOfNoteEditor.textContent = `${this.handleTime(null).slice(11,16)}`;
+            this.stickyBars.innerHTML = "";
+
+            this.getLocalStorage(null);
         });
     }
     setLocalStorage(id, tittle, category, nameOfWriter, time, article, stickyBarArticle){
@@ -154,11 +161,11 @@ export default class stickyNoteApp{
             const newId = ids.length > 0 ? parseInt(ids[ids.length - 1]) + 1 : 0;
             data[newId.toString()] = obj;
     
-            localStorage.setItem('stickynotes', JSON.stringify(data));
+            localStorage.setItem('stickynotes', JSON.stringify(this.updateObjNewestToOld(data)));
         }
         else{
             data[id.toString()] = obj;
-            localStorage.setItem('stickynotes', JSON.stringify(data));
+            localStorage.setItem('stickynotes', JSON.stringify(this.updateObjNewestToOld(data)));
         }
     }
     getLocalStorage(id){
@@ -178,7 +185,7 @@ export default class stickyNoteApp{
     }
     static editor(id, tittle, category, nameOfWriter, time, article){
         return `
-        <div class="noteEditorHeader ${id}">
+        <div data-id="${id}" class="noteEditorHeader">
                 <div class="noteEditorTitleDetails">
                     <h1>
                         <span class="noteEditorTitleDetailsHash">#</span>
