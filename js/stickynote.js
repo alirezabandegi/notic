@@ -45,9 +45,9 @@ export default class stickyNoteApp{
         }
     }
     addStickyBar(){
-        const id = localStorage.length - 1;
-        this.setLocalStorage(id,"Write Tittle","Work","Alireza Maxer",`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
-        let localstorageGetDetails = this.getLocalStorage(id);
+        this.setLocalStorage(null,"Write Tittle","Work","Alireza Maxer",`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
+        const id = Object.keys(this.getLocalStorage(1)).length - 1;
+        const localstorageGetDetails = this.getLocalStorage(1)[id];
         this.stickyBars.innerHTML += this.createStickyBar(id, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle);
         this.noteEditor.innerHTML = stickyNoteApp.editor(id, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
         this.displayStickyContent();
@@ -56,7 +56,7 @@ export default class stickyNoteApp{
         const stickyBars = document.querySelectorAll(".StickyBar");
         stickyBars.forEach((stickyBar, i) => {
             stickyBar.addEventListener("click", () => {
-                let localstorageGetDetails = this.getLocalStorage(i);
+                let localstorageGetDetails = this.getLocalStorage(1)[i];
                 this.noteEditor.innerHTML = stickyNoteApp.editor(i, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
                 this.idOfStickyBar = i;
                 this.saveSticky();
@@ -117,22 +117,35 @@ export default class stickyNoteApp{
         });
     }
     setLocalStorage(id, tittle, category, nameOfWriter, time, article, stickyBarArticle){
-        const addToLocalStorage = {tittle: tittle.trim(), category: category.trim(), nameOfWriter: nameOfWriter, time: time, article: article.trim(), stickyBarArticle: stickyBarArticle.trim()};
-        localStorage.setItem(`Stickynote${id}`, JSON.stringify(addToLocalStorage));
+        const obj = {tittle: tittle.trim(), category: category.trim(), nameOfWriter: nameOfWriter, time: time, article: article.trim(), stickyBarArticle: stickyBarArticle.trim()};
+        let data = JSON.parse(localStorage.getItem('stickynote')) || {};
+
+        if(id === null){
+            const ids = Object.keys(data);
+    
+            const newId = ids.length > 0 ? parseInt(ids[ids.length - 1]) + 1 : 0;
+            data[newId.toString()] = obj;
+    
+            localStorage.setItem('stickynote', JSON.stringify(data));
+        }
+        else{
+            data[id.toString()] = obj;
+            localStorage.setItem('stickynote', JSON.stringify(data));
+        }
     }
     getLocalStorage(id){
         if(id === null){
-            for(let i = 0; i < (localStorage.length - 1); i++){
-                const localStorageDetails = JSON.parse(localStorage.getItem(`Stickynote${i}`));
-                if(localStorageDetails !== null){
-                    const localstorageGetDetails = this.getLocalStorage(i);
-                    this.stickyBars.innerHTML += this.createStickyBar(i, localstorageGetDetails.tittle, localstorageGetDetails.category, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.stickyBarArticle);
+            const stickynoteData = JSON.parse(localStorage.getItem('stickynote'));
+            if(stickynoteData !== null){
+                for(let i = 0; i < Object.keys(stickynoteData).length; i++){
+                    const stickynoteDataValue = stickynoteData[i];
+                    this.stickyBars.innerHTML += this.createStickyBar(i, stickynoteDataValue.tittle, stickynoteDataValue.category, this.handleTime(stickynoteDataValue.time), stickynoteDataValue.stickyBarArticle);
                     this.displayStickyContent();
                 }
             }
         }
         else{
-            return JSON.parse(localStorage.getItem(`Stickynote${id}`));
+            return JSON.parse(localStorage.getItem('stickynote')) || {};
         }
     }
     static editor(id, tittle, category, nameOfWriter, time, article){
