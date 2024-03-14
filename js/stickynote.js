@@ -61,7 +61,35 @@ export default class stickyNoteApp{
                 this.idOfStickyBar = i;
                 this.saveSticky();
                 this.limitCharacters();
+                this.deleteSticky(i);
             });
+        });
+    }
+    resetKeys(obj) {
+        const newObj = {};
+        Object.keys(obj).forEach((key, index) => {
+          newObj[index] = obj[key];
+        });
+        return newObj;
+    };
+    removeKey(obj, key) {
+        const { [key]: omit, ...res } = obj;
+        return res;
+    };
+    deleteSticky(id){
+        document.querySelector(".noteDeleteButton").addEventListener("click", () => {
+            const StickyBars = document.querySelector(".StickyBars");
+            const stickyElements = StickyBars.children;
+            
+            for (let i = stickyElements.length - 1; i >= 0; i--) {
+                stickyElements[i].remove();
+            }
+
+            const updatedStickyNotes = this.resetKeys(this.removeKey(this.getLocalStorage(1), id));
+            localStorage.setItem('stickynotes', JSON.stringify(updatedStickyNotes));
+            
+            this.getLocalStorage(null)
+            this.noteEditor.innerHTML = "";
         });
     }
     limitCharacters() {
@@ -118,7 +146,7 @@ export default class stickyNoteApp{
     }
     setLocalStorage(id, tittle, category, nameOfWriter, time, article, stickyBarArticle){
         const obj = {tittle: tittle.trim(), category: category.trim(), nameOfWriter: nameOfWriter, time: time, article: article.trim(), stickyBarArticle: stickyBarArticle.trim()};
-        let data = JSON.parse(localStorage.getItem('stickynote')) || {};
+        let data = JSON.parse(localStorage.getItem('stickynotes')) || {};
 
         if(id === null){
             const ids = Object.keys(data);
@@ -126,16 +154,16 @@ export default class stickyNoteApp{
             const newId = ids.length > 0 ? parseInt(ids[ids.length - 1]) + 1 : 0;
             data[newId.toString()] = obj;
     
-            localStorage.setItem('stickynote', JSON.stringify(data));
+            localStorage.setItem('stickynotes', JSON.stringify(data));
         }
         else{
             data[id.toString()] = obj;
-            localStorage.setItem('stickynote', JSON.stringify(data));
+            localStorage.setItem('stickynotes', JSON.stringify(data));
         }
     }
     getLocalStorage(id){
         if(id === null){
-            const stickynoteData = JSON.parse(localStorage.getItem('stickynote'));
+            const stickynoteData = JSON.parse(localStorage.getItem('stickynotes'));
             if(stickynoteData !== null){
                 for(let i = 0; i < Object.keys(stickynoteData).length; i++){
                     const stickynoteDataValue = stickynoteData[i];
@@ -145,12 +173,12 @@ export default class stickyNoteApp{
             }
         }
         else{
-            return JSON.parse(localStorage.getItem('stickynote')) || {};
+            return JSON.parse(localStorage.getItem('stickynotes')) || {};
         }
     }
     static editor(id, tittle, category, nameOfWriter, time, article){
         return `
-        <div id="${id}" class="noteEditorHeader">
+        <div class="noteEditorHeader ${id}">
                 <div class="noteEditorTitleDetails">
                     <h1>
                         <span class="noteEditorTitleDetailsHash">#</span>
