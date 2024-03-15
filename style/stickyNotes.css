@@ -120,11 +120,6 @@
     cursor: pointer;
     padding: 2px 5px;
 }
-.StickyBarTimeCategory button svg{
-    width: 14px;
-    height: 14px;
-    margin-right: 3px;
-}
 .StickyBarTimeCategory button span{
     font-size: 0.85rem;
     color: #a3574b;
@@ -184,6 +179,7 @@
     width: 75%;
     border-left: solid 1px #f1f1f171;
     height: 100vh;
+    background-color: #363435;
 }
 .noteEditorHeader{
     display: flex;

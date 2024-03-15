@@ -3,6 +3,9 @@ export default class stickyNoteApp{
         this.main = main;
         this.main.innerHTML = stickyNoteApp.htmlContent();
         
+        this.getPersonalInformation = JSON.parse(localStorage.getItem("personalInformation"));
+
+        this.serchStickyAndCategoryInput = document.querySelector("#serchStickyAndCategoryInput");
         this.addNotesStickyBarButton = document.querySelector(".addNotesStickyBarButton");
         this.stickyBars = document.querySelector(".StickyBars");
         this.noteEditor = document.querySelector(".noteEditor");
@@ -11,11 +14,62 @@ export default class stickyNoteApp{
         this.categories = document.querySelector(".categories");
         
         this.getLocalStorage(null);
+        this.getCategoryFromLocalStorage(null);
 
         this.idOfStickyBar = null;
         
+        this.serchStickyAndCategoryInput.addEventListener("input", (event) => this.handleSearchSticky(event.target.value));
         this.addNotesStickyBarButton.addEventListener("click", () => this.addStickyBar());
         this.addCategoriesButton.addEventListener("click", () => this.addCategorie());
+    }
+    categoriesClicked(){
+        const categoriesClick = document.querySelectorAll(".categorie");
+        categoriesClick.forEach((categorie) => {
+            categorie.addEventListener("click", (event) => {
+                serchStickyAndCategoryInput.value = event.target.textContent.slice(1);
+                this.handleSearchSticky(event.target.textContent.slice(1));
+            });
+        });
+    }
+    getCategoryFromLocalStorage(value){
+        const localStorageCategorys = JSON.parse(localStorage.getItem('categorys')) || [];
+        if(value === null){
+            localStorageCategorys.forEach((category) => {
+                this.categories.innerHTML += stickyNoteApp.createCategorie(category);
+            });
+
+            this.categoriesClicked();
+        }
+        else{
+            return localStorageCategorys;
+        }
+    }
+    searchNotesAndCategory(inputText) {
+        const result = [];
+        const searchTerm = inputText.toLowerCase();
+    
+        for (const key in this.getLocalStorage(1)) {
+            const note = this.getLocalStorage(1)[key];
+            if (note.tittle.toLowerCase().includes(searchTerm) || note.category.toLowerCase().includes(searchTerm)) {
+                result.push(note);
+            }
+        }
+    
+        return result;
+    }
+    handleSearchSticky(value) {
+        this.stickyBars.innerHTML = "";
+        this.noteEditor.innerHTML = "";
+        if(value === ""){
+            this.getLocalStorage(null);
+        }
+        else{
+            const searchResult = this.searchNotesAndCategory(value);
+            searchResult.forEach((search, i) => {
+                this.stickyBars.innerHTML += this.createStickyBar(i, search.tittle, search.category, this.handleTime(search.time), search.stickyBarArticle);
+                this.displayStickyContent();
+            });
+        }
     }
     handleTime(time){
         const currentTime = new Date();
@@ -39,9 +93,19 @@ export default class stickyNoteApp{
         }
     }
     addCategorie(){
-        let categoryName = prompt("Entry category name:").trim();
-            if(categoryName){
-                this.categories.innerHTML += stickyNoteApp.createCategorie(categoryName);
+        const categoryName = prompt("Entry category name:");
+        if(categoryName && categoryName.trim() !== ""){
+            const fixText = categoryName.trim().toLocaleLowerCase();
+            let getlocalstorageCategory = this.getCategoryFromLocalStorage(1);
+            if(getlocalstorageCategory.includes(fixText) === false){
+                if (!getlocalstorageCategory.length) {
+                    getlocalstorageCategory = [];
+                }
+                getlocalstorageCategory.push(fixText);
+                localStorage.setItem('categorys', JSON.stringify(getlocalstorageCategory));
+                this.categories.innerHTML += stickyNoteApp.createCategorie(fixText);
+                this.categoriesClicked();
+            }
         }
     }
     setToFirst(id, data) {
@@ -49,7 +113,7 @@ export default class stickyNoteApp{
         this.stickyBars.insertAdjacentHTML('afterbegin', stickyBar);
     }
     addStickyBar(){
-        this.setLocalStorage(null,"Write Tittle","Work","Alireza Maxer",`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
+        this.setLocalStorage(null,"Write Tittle","No category",this.getPersonalInformation.name,`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
         const id = 0;
         const localstorageGetDetails = this.getLocalStorage(1)[id];
 
@@ -223,7 +287,6 @@ export default class stickyNoteApp{
 
             <div class="StickyBarTimeCategory">
                 <button>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 0 24 24" width="14px" fill="#a3574b"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
                     <span class="stickyBarCategory">${category}</span>
                 </button>
 
@@ -236,7 +299,7 @@ export default class stickyNoteApp{
     }
     static createCategorie(name){
         return `
-        <button><span>#</span>${name}</button>
+        <button class="categorie"><span>#</span>${name}</button>
         `;
     }
     static htmlContent(){
@@ -246,7 +309,7 @@ export default class stickyNoteApp{
                 <div class="serchBar">
                     <form>
                         <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 0 24 24" width="20px" fill="#939393"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                        <input type="text" placeholder="Search notes" name="search">
+                        <input id="serchStickyAndCategoryInput" type="text" placeholder="Search notes" name="search">
                     </form>
                 </div>
 
