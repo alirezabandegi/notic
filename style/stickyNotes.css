@@ -1,3 +1,11 @@
+.nocopy {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 .main{
     display: flex;
     width: 100%;
@@ -193,7 +201,9 @@
 }
 .noteEditorTitleDetails h1{
     font-weight: 500;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 5px;
     position: relative;
 }
@@ -204,7 +214,21 @@
     top: -3px;
     left: -25px;
 }
+#categoryFormSelect{
+    background-color: transparent;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    outline: none;
+    border: 2px outset #939393;
+    margin-right: 3px;
+}
+#categoryFormSelect option{
+    background-color: #121212;
+
+}
 .noteTitle{
+    margin-left: 5px;
     overflow-wrap: anywhere;
 }
 .writerName{

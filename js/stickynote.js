@@ -2,7 +2,7 @@ export default class stickyNoteApp{
     constructor(main){
         this.main = main;
         this.main.innerHTML = stickyNoteApp.htmlContent();
-        
+
         this.getPersonalInformation = JSON.parse(localStorage.getItem("personalInformation"));
 
         this.serchStickyAndCategoryInput = document.querySelector("#serchStickyAndCategoryInput");
@@ -22,6 +22,22 @@ export default class stickyNoteApp{
         this.addNotesStickyBarButton.addEventListener("click", () => this.addStickyBar());
         this.addCategoriesButton.addEventListener("click", () => this.addCategorie());
     }
+    setCategorysToNotes(noteCategory){
+        const categoryFormSelect = document.querySelector("#categoryFormSelect");
+        this.getCategoryFromLocalStorage(1).forEach((category) => {
+            categoryFormSelect.innerHTML += this.categorySelectOption(category);
+
+            const options = categoryFormSelect.querySelectorAll("option");
+
+            options.forEach(option => {
+                if (option.textContent === noteCategory) {
+                    option.setAttribute("selected", "selected");
+                } else {
+                    option.removeAttribute("selected");
+                }
+            });
+        });
+    }
     categoriesClicked(){
         const categoriesClick = document.querySelectorAll(".categorie");
         categoriesClick.forEach((categorie) => {
@@ -39,6 +55,7 @@ export default class stickyNoteApp{
             });
 
             this.categoriesClicked();
+            this.deleteCategory();
         }
         else{
             return localStorageCategorys;
@@ -92,8 +109,49 @@ export default class stickyNoteApp{
             }
         }
     }
+    promptWithMaxLength(promptMessage, maxLength) {
+        let userInput;
+        do {
+            userInput = prompt(promptMessage);
+            if (userInput === null) {
+                return null;
+            } else if (userInput.length > maxLength) {
+                alert(`Please enter no more than ${maxLength} characters.`);
+            }
+        } while (userInput.length > maxLength);
+        return userInput;
+    }
+    deleteCategory(){
+        const categories = document.querySelectorAll(".categorie");
+
+        categories.forEach((category) => {
+            category.addEventListener("contextmenu", (event) => {
+                let localStorageCategory = this.getCategoryFromLocalStorage(1);
+                localStorageCategory.splice(localStorageCategory.indexOf(event.target.textContent.slice(1)), 1);
+                let deleteCategoryFromNote = {};
+                for(const key in this.getLocalStorage(1)){
+                    const note = this.getLocalStorage(1)[key];
+                    if(note.category.includes(event.target.textContent.slice(1))){
+                        note.category = "No Category";
+                    }
+                    deleteCategoryFromNote[key] = note;
+                }
+                console.log(deleteCategoryFromNote);
+                category.remove();
+                localStorage.setItem('categorys', JSON.stringify(localStorageCategory));
+                if(Object.keys(deleteCategoryFromNote).length > 0 && JSON.stringify(deleteCategoryFromNote) !== JSON.stringify(this.getLocalStorage(1))){
+                    localStorage.setItem('stickynotes', JSON.stringify(deleteCategoryFromNote));
+                    
+                    this.stickyBars.innerHTML = "";
+                    this.getLocalStorage(null);
+                    this.noteEditor.innerHTML = "";
+                }
+            });
+        });
+    }
     addCategorie(){
-        const categoryName = prompt("Entry category name:");
+        const categoryName = this.promptWithMaxLength("Entry category name:", 10);
+        
         if(categoryName && categoryName.trim() !== ""){
             const fixText = categoryName.trim().toLocaleLowerCase();
             let getlocalstorageCategory = this.getCategoryFromLocalStorage(1);
@@ -105,6 +163,7 @@ export default class stickyNoteApp{
                 localStorage.setItem('categorys', JSON.stringify(getlocalstorageCategory));
                 this.categories.innerHTML += stickyNoteApp.createCategorie(fixText);
                 this.categoriesClicked();
+                this.deleteCategory();
             }
         }
     }
@@ -113,21 +172,23 @@ export default class stickyNoteApp{
         this.stickyBars.insertAdjacentHTML('afterbegin', stickyBar);
     }
     addStickyBar(){
-        this.setLocalStorage(null,"Write Tittle","No category",this.getPersonalInformation.name,`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
+        this.setLocalStorage(null,"Write Tittle","No Category",this.getPersonalInformation.name,`${this.handleTime(null)}`,"Hi this is a sticky Note.", "Hi this is a sticky Note.");
         const id = 0;
         const localstorageGetDetails = this.getLocalStorage(1)[id];
 
         this.setToFirst(id, localstorageGetDetails);
-        this.noteEditor.innerHTML = stickyNoteApp.editor(id, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
+        this.noteEditor.innerHTML = stickyNoteApp.editor(id, localstorageGetDetails.tittle, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
         this.displayStickyContent();
     }
     displayStickyContent() {
         const stickyBars = document.querySelectorAll(".StickyBar");
+
         stickyBars.forEach((stickyBar, i) => {
             stickyBar.addEventListener("click", () => {
                 let localstorageGetDetails = this.getLocalStorage(1)[i];
-                this.noteEditor.innerHTML = stickyNoteApp.editor(i, localstorageGetDetails.tittle, localstorageGetDetails.category, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
+                this.noteEditor.innerHTML = stickyNoteApp.editor(i, localstorageGetDetails.tittle, localstorageGetDetails.nameOfWriter, this.handleTime(localstorageGetDetails.time), localstorageGetDetails.article);
                 this.idOfStickyBar = i;
+                this.setCategorysToNotes(localstorageGetDetails.category);
                 this.saveSticky();
                 this.limitCharacters();
                 this.deleteSticky(i);
@@ -200,7 +261,7 @@ export default class stickyNoteApp{
         noteSaveButton.addEventListener("click", () => {
             const noteEditorHeader = document.querySelector(".noteEditorHeader").getAttribute('data-id');
             const noteTitle = document.querySelector(".noteTitle");
-            const noteCategory = document.querySelector(".noteCategory");
+            const categoryFormSelect = document.querySelector("#categoryFormSelect");
             const writerName = document.querySelector(".writerName");
             const note = document.querySelector(".note");
     
@@ -208,7 +269,7 @@ export default class stickyNoteApp{
             ? note.textContent.substring(0, 80) + "..."
             : note.textContent;
 
-            this.setLocalStorage(noteEditorHeader, noteTitle.textContent, noteCategory.textContent, writerName.textContent,`${this.handleTime(null)}`, note.innerHTML, stickyBarArticleHanddle);
+            this.setLocalStorage(noteEditorHeader, noteTitle.textContent, categoryFormSelect.value, writerName.textContent,`${this.handleTime(null)}`, note.innerHTML, stickyBarArticleHanddle);
 
             this.stickyBars.innerHTML = "";
 
@@ -247,13 +308,18 @@ export default class stickyNoteApp{
             return JSON.parse(localStorage.getItem('stickynotes')) || {};
         }
     }
-    static editor(id, tittle, category, nameOfWriter, time, article){
+    categorySelectOption(name){
+        return `<option value="${name}">${name}</option>`;
+    }
+    static editor(id, tittle, nameOfWriter, time, article){
         return `
         <div data-id="${id}" class="noteEditorHeader">
                 <div class="noteEditorTitleDetails">
                     <h1>
                         <span class="noteEditorTitleDetailsHash">#</span>
-                        <span class="noteCategory">${category}</span> /
+                        <select id="categoryFormSelect" name="categoryForm" form="categoryForm">
+                            <option value="No Category">No Category</option>
+                        </select> /
                         <span class="noteTitle" contenteditable="true">${tittle}</span>
                     </h1>
 
@@ -304,7 +370,7 @@ export default class stickyNoteApp{
     }
     static htmlContent(){
         return `
-        <section class="stickys">
+        <section class="stickys nocopy">
             <div class="notesContainer">
                 <div class="serchBar">
                     <form>

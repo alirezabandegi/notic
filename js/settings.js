@@ -82,6 +82,18 @@ export default class settingsApp{
 
         // Add event listener for profile picture upload
         document.getElementById('photoInput').addEventListener('change', () => this.handlePhoto());
+
+        document.querySelector('.removeImg').addEventListener('click', () => this.removePhoto());
+    }
+
+    removePhoto(){
+        const profilePic = document.querySelector(".profilePic");
+        const photo = document.getElementById('photo');
+
+        localStorage.removeItem('profilePicture');
+
+        profilePic.src = "files/profile.webp";
+        photo.src = "files/profile.webp";
     }
 
     // Handles the process of updating the profile picture
