@@ -15,6 +15,7 @@ export default class stickyNoteApp{
         
         this.getLocalStorage(null);
         this.getCategoryFromLocalStorage(null);
+        this.noteEditor.innerHTML = stickyNoteApp.helpSticky();
 
         this.idOfStickyBar = null;
         
@@ -79,6 +80,7 @@ export default class stickyNoteApp{
         this.noteEditor.innerHTML = "";
         if(value === ""){
             this.getLocalStorage(null);
+            this.noteEditor.innerHTML = stickyNoteApp.helpSticky();
         }
         else{
             const searchResult = this.searchNotesAndCategory(value);
@@ -232,6 +234,7 @@ export default class stickyNoteApp{
             
             this.getLocalStorage(null);
             this.noteEditor.innerHTML = "";
+            this.noteEditor.innerHTML = stickyNoteApp.helpSticky();
         });
     }
     limitCharacters() {
@@ -246,15 +249,6 @@ export default class stickyNoteApp{
             }
         });
     }
-    /*autoSave() {
-        const note = document.querySelector(".note");
-
-        note.addEventListener('input', () => {
-            if (note) {
-                console.log(note);
-            }
-        });
-    }*/
     saveSticky(){
         const noteSaveButton = document.querySelector(".noteSaveButton");
 
@@ -307,6 +301,67 @@ export default class stickyNoteApp{
         else{
             return JSON.parse(localStorage.getItem('stickynotes')) || {};
         }
+    }
+    static helpSticky(){
+        return`
+        <div id="helpSticky">
+            <h1>Welcome to StickyNote App!</h1>
+            <p>StickyNote is a simple yet powerful tool to help you organize your thoughts, ideas, and tasks. With StickyNote, you can create, edit, and manage your notes effortlessly.</p>
+            <p>Getting Started:</p>
+
+            <ol>
+                <li><strong>Creating a New Note:</strong>
+                    <ul>
+                        <li>Click on the "+" button in the "MY NOTES" section to create a new sticky note.</li>
+                        <li>Enter the title and content of your note.</li>
+                        <li>Click on the "Save" button to save your note.</li>
+                    </ul>
+                </li>
+
+                <li><strong>Managing Categories:</strong>
+                    <ul>
+                        <li>Click on the "+" button in the "CATEGORIES" section to add a new category.</li>
+                        <li>Enter the name of the category (up to 10 characters) and press Enter.</li>
+                        <li>You can assign categories to your notes to keep them organized.</li>
+                    </ul>
+                </li>
+
+                <li><strong>Searching Notes:</strong>
+                    <ul>
+                        <li>Use the search bar at the top to quickly find notes by title or category.</li>
+                        <li>Simply type your search query, and StickyNote will display matching notes in real-time.</li>
+                    </ul>
+                </li>
+
+                <li><strong>Viewing and Editing Notes:</strong>
+                    <ul>
+                        <li>Click on a sticky note to view its details.</li>
+                        <li>Edit the title or content of the note directly in the editor.</li>
+                        <li>You can also change the category of the note from the dropdown menu.</li>
+                    </ul>
+                </li>
+
+                <li><strong>Deleting Notes or Categories:</strong>
+                    <ul>
+                        <li>Right-click on a category to delete it.</li>
+                        <li>Click on the delete button (trash can icon) within a note to remove it.</li>
+                    </ul>
+                </li>
+
+                <li><strong>Limiting Characters:</strong>
+                    <ul>
+                        <li>The title of each note is limited to 30 characters to keep things concise.</li>
+                        <li>If you exceed the character limit, StickyNote will alert you.</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <p>Enjoy Using StickyNote!</p>
+            <p>We hope you find StickyNote intuitive and useful for capturing your ideas and staying organized. If you have any questions or feedback, feel free to reach out to us. Happy note-taking!</p>
+            <br>
+            <p>Feel free to adjust the guide as needed to better fit your app's features and user experience.</p>
+        </div>
+        `;
     }
     categorySelectOption(name){
         return `<option value="${name}">${name}</option>`;
@@ -370,7 +425,7 @@ export default class stickyNoteApp{
     }
     static htmlContent(){
         return `
-        <section class="stickys nocopy">
+        <section class="stickys">
             <div class="notesContainer">
                 <div class="serchBar">
                     <form>

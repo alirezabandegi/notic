@@ -33,10 +33,6 @@
     color: #b3b3b3;
     padding: 3% 5%;
     font-size: 1rem;
-    overflow: hidden;
-    scrollbar-gutter: stable;
-}
-.content:hover{
     overflow-y: auto;
     scrollbar-color: #f1f1f171 transparent;
 }
