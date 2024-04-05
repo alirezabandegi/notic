@@ -39,7 +39,7 @@ Have questions, feedback, or suggestions? We value your input! Reach out to us a
 
 Follow us on social media to stay connected and receive real-time updates:
 
-- [Instagram](https://www.instagram.com/)
+- [Instagram](https://www.instagram.com/alirezamaxery)
 - [GitHub](https://github.com/alirezabandegi)
 
 Thank you for choosing Notic - where productivity meets simplicity!
